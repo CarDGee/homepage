@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<head>
+	<title>Home</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="container">
+        <div id="clock"></div>
+        <div class="weather-container">
+            <div class="row">
+                <div id="weather-description"class="inline"></div>
+                <div class="inline">-</div>
+                <div id="temp" class="inline"></div>
+            </div>
+        </div>
+        <div class="bookmark-container">
+            <div class="bookmark-set">
+                <div class="bookmark-title">CarDGee</div>
+                <div class="bookmark-inner-container">
+                    <a class="bookmark" href="https://cardgee.blogs.sapo.pt/" target="_blank">CarDGee's</a>
+                    <a class="bookmark" href="https://github.com/CarDGee/" target="_blank">github</a>
+                    <a class="bookmark" href="https://gitlab.com/CarDGee/" target="_blank">gitlab</a>
+                </div>
+            </div>
+            <div class="bookmark-set">
+                <div class="bookmark-title">Gentoo</div>
+                <div class="bookmark-inner-container">
+                    <a class="bookmark" href="https://bugs.gentoo.org/" target="_blank">Gentoo Bugzilla</a>
+                    <a class="bookmark" href="https://forums.gentoo.org/" target="_blank">Gentoo Forum</a>
+                    <a class="bookmark" href="https://www.gentoo.org/" target="_blank">Gentoo Linux</a>
+                    <a class="bookmark" href="https://planet.gentoo.org/" target="_blank">Planet Gentoo</a>
+                    <a class="bookmark" href="https://gpo.zugaina.org/" target="_blank">Zugaina</a>
+                </div>
+            </div>
+            <div class="bookmark-set">
+                <div class="bookmark-title">Linux News</div>
+                <div class="bookmark-inner-container">
+                    <a class="bookmark" href="https://distrowatch.com/" target="_blank">Distrowatch</a>
+                    <a class="bookmark" href="https://itsfoss.com/" target="_blank">It's Foss</a>
+                    <a class="bookmark" href="https://www.linuxinsider.com/" target="_blank">LinuxInsider</a>
+                    <a class="bookmark" href="https://www.linuxtoday.com/" target="_blank">LinuxToday</a>
+                    <a class="bookmark" href="https://omgubuntu.co.uk/" target="_blank">OMG Ubuntu</a>
+                    <a class="bookmark" href="https://phoronix.com/" target="_blank">Phoronix</a>
+                    <a class="bookmark" href="https://www.zdnet.com/topic/linux/" target="_blank">ZDNet</a>
+                </div>
+            </div>
+            <div class="bookmark-set">
+                <div class="bookmark-title">News</div>
+                <div class="bookmark-inner-container">
+                    <a class="bookmark" href="https://www.bbc.co.uk/news" target="_blank">BBC News</a>
+                    <a class="bookmark" href="https://edition.cnn.com/" target="_blank">CNN</a>
+                    <a class="bookmark" href="https://www.euronews.com/" target="_blank">EuroNews</a>
+                    <a class="bookmark" href="https://www.rtp.pt/" target="_blank">RTP</a>
+                    <a class="bookmark" href="https://www.sapo.pt/" target="_blank">Sapo</a>
+                </div>
+            </div>
+            <div class="bookmark-set">
+            <div class="bookmark-title">Reddit</div>
+                <div class="bookmark-inner-container">
+                    <a class="bookmark" href="https://reddit.com/r/archlinux" target="_blank">/r/archlinux</a>
+                    <a class="bookmark" href="https://reddit.com/r/commandline" target="_blank">/r/commandline</a>
+                    <a class="bookmark" href="https://reddit.com/r/emacs" target="_blank">/r/emacs</a>
+                    <a class="bookmark" href="https://www.reddit.com/r/Gentoo/" target="_blank">/r/gentoo</a>
+                    <a class="bookmark" href="https://reddit.com/r/linux" target="_blank">/r/linux</a>
+                    <a class="bookmark" href="https://reddit.com/r/linuxmemes" target="_blank">/r/linuxmemes</a>
+                    <a class="bookmark" href="https://www.reddit.com/r/memes/" target="_blank">/r/memes</a>
+                    <a class="bookmark" href="https://reddit.com/r/unixporn" target="_blank">/r/unixporn</a>
+                    <a class="bookmark" href="https://reddit.com/r/vim" target="_blank">/r/vim</a>
+                    <a class="bookmark" href="https://www.reddit.com/r/voidlinux/" target="_blank">/r/voidlinux</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // Get current time and format
+        getTime = () => {
+            let date = new Date(),
+                min = date.getMinutes(),
+                sec = date.getSeconds(),
+                hour = date.getHours();
+
+            return "" + 
+                (hour < 10 ? ("0" + hour) : hour) + ":" + 
+                (min < 10 ? ("0" + min) : min) + ":" + 
+                (sec < 10 ? ("0" + sec) : sec);
+        }
+
+        window.onload = () => {
+            let xhr = new XMLHttpRequest();
+            // Request to open weather map
+            xhr.open('GET', 'http://api.openweathermap.org/data/2.5/weather?id=2634578&units=metric&appid=e5b292ae2f9dae5f29e11499c2d82ece');
+            xhr.onload = () => {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        let json = JSON.parse(xhr.responseText);
+                        console.log(json);
+                        document.getElementById("temp").innerHTML = json.main.temp.toFixed(0) + " C";
+                        document.getElementById("weather-description").innerHTML = json.weather[0].description;
+                    } else {
+                        console.log('error msg: ' + xhr.status);
+                    }
+                }
+            }
+            xhr.send();
+            // Set up the clock
+            document.getElementById("clock").innerHTML = getTime();
+            // Set clock interval to tick clock
+            setInterval( () => {
+                document.getElementById("clock").innerHTML = getTime();
+            },100);
+        }
+
+        document.addEventListener("keydown", event => {
+            if (event.keyCode == 32) {          // Spacebar code to open search
+                document.getElementById('weather').style.display = 'flex';
+                document.getElementById('weather-description').focus();
+            } 
+        });
+    </script>
+</body>
+</html>
